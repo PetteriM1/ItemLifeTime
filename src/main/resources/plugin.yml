@@ -1,0 +1,4 @@
+name: ItemLifeTime
+main: me.petterim1.itemlifetime.Main
+version: "${pom.version}"
+api: ["1.0.0"]
