@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 
 public class Main extends PluginBase implements Listener {
 
-    int itemLifetime;
+    private int itemLifetime;
 
     public void onEnable() {
         saveDefaultConfig();
