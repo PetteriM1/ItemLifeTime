@@ -1,7 +1,6 @@
 package me.petterim1.itemlifetime;
 
 import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.item.EntityItem;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.ItemSpawnEvent;
@@ -12,8 +11,16 @@ import java.lang.reflect.Field;
 public class Main extends PluginBase implements Listener {
 
     private int itemLifetime;
+    private Field age;
 
     public void onEnable() {
+        try {
+            age = Entity.class.getDeclaredField("age");
+            age.setAccessible(true);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+
         saveDefaultConfig();
         itemLifetime = getConfig().getInt("itemLifetime", 6000);
         if (itemLifetime <= 6000) {
@@ -26,12 +33,13 @@ public class Main extends PluginBase implements Listener {
     }
 
     @EventHandler
-    public void onItemSpawn(ItemSpawnEvent e) throws NoSuchFieldException, IllegalAccessException {
+    public void onItemSpawn(ItemSpawnEvent e) {
         Entity i = e.getEntity();
         i.namedTag.putShort("Age", itemLifetime);
-        Class<?> c = i.getClass().getSuperclass();
-        Field f = c.getDeclaredField("age");
-        f.setAccessible(true);
-        f.set(i, itemLifetime);
+        try {
+            age.set(i, itemLifetime);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
